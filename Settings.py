@@ -2,8 +2,7 @@
 
 command_prefix = "."
 
-valid_command = {
+valid_commands = {
     'test',
     'test2',
 }
-

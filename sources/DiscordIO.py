@@ -24,5 +24,5 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
-    if message.content.startswith(Settings.command_prefix + Settings.valid_command):
-        pass_event_list(message.content[len(command_prefix):])
+    if message.content.startswith(Settings.command_prefix) and message.content[len(Settings.command_prefix):].split(" ")[0] in Settings.valid_commands:
+        events.append(message.content[len(Settings.command_prefix):])
