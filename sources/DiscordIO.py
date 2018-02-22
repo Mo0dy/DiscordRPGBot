@@ -19,5 +19,5 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
-    if(message.content.startswith(Settings.command_prefix)):
-        print(message.content)
+    if message.content.startswith(Settings.command_prefix):
+        print('received command: "' + str(message.content) + '"')
