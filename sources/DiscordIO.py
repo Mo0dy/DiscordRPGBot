@@ -1,6 +1,6 @@
 import discord
 import asyncio
-import DiscordRPGBot.Settings as Settings
+import Settings as Settings
 
 client = discord.Client()
 
