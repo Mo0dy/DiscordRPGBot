@@ -2,6 +2,8 @@ import discord
 import asyncio
 import DiscordRPGBot.Settings as Settings
 
+client = discord.Client()
+
 
 def launch_bot():
     client.run("NDE2MjE5MTY4OTA4NjQwMjU2.DXBSFg.Dt_vYEiiA6F0YBHX7HQ4TvuDcU0")
