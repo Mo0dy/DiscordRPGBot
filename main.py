@@ -1,3 +1,3 @@
-import DiscordRPGBot.sources.DiscordIO as DiscordIO
+import sources.DiscordIO as DiscordIO
 
 DiscordIO.launch_bot()
