@@ -9,14 +9,16 @@ debug = True
 
 # stores the messages written between iterations
 events = []
+messages = []
 DiscordIO.pass_event_list(events)
+DiscordIO.pass_messages(messages)
 
 # create new game
 game = Game()
 
 last_time = time.time()
 def main_loop():
-    global events, last_time
+    global events, last_time, messages
     # calculate dt
     curr_time = time.time()
     dt = curr_time - last_time
@@ -31,7 +33,7 @@ def main_loop():
             print("")
 
     # update game
-    game.update(events, dt)
+    messages += game.update(events, dt)
 
     # be careful not to change the reference
     del events[:]
