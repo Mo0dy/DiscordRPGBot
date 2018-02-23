@@ -1,7 +1,7 @@
 import discord
 import asyncio
 import Settings as Settings
-from sources.Event import Event
+import sources.Event as Event
 
 client = discord.Client()
 
@@ -43,4 +43,9 @@ async def on_message(message):
     if message.content.startswith(Settings.command_prefix):
         message_no_prefix = message.content[len(Settings.command_prefix):]
         if message_no_prefix.split(" ")[0] in Settings.valid_commands:
-            events.append(Event(message.author.id, message_no_prefix))
+            events.append(Event.Event(Event.MESSAGE, message.author.id, message_no_prefix, message))
+
+
+@client.event
+async def on_reaction_add(reaction, user):
+    events.append(Event.Event(Event.REACTION, user.id, reaction.emoji, reaction))
