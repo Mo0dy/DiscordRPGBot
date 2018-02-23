@@ -19,4 +19,4 @@ class Event(object):
         elif self.type == REACTION:
             e_type = "reaction"
 
-        return "<Event: " + e_type + " owner: " + self.owner + ' content: "' + self.content + '">'
+        return '<Event: "' + e_type + '" owner: "' + self.owner + '" content: "' + self.content + '">'
