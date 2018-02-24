@@ -20,7 +20,7 @@ class Game(object):
         return self.messages
 
     def test(self, event):
-        print("test")
+        self.reply(event, "test")
 
     def create_character(self, event):
         self.characters[event.owner] = Character()
@@ -30,7 +30,7 @@ class Game(object):
         self.reply(event, str(self.characters[event.owner].hp))
 
     def help(self, event):
-        print(self.commands)
+        self.reply(event, str(self.commands))
 
     def reply(self, event, content):
         self.send_message(event.raw_content.channel, content)
