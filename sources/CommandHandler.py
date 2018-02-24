@@ -21,7 +21,7 @@ class CommandHandler(object):
         # checks if command exists
         if command[0] in Game.commands:
             # calls the command associated with the string and assigns a request ID
-            Game.commands[command[0]](self.game, self.add_request(message))
+            await Game.commands[command[0]](self.game, message.author, self.add_request(message))
         else:
             await self.m_handler.reply(message, "no such command")
 

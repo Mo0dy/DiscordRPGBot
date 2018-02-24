@@ -1,6 +1,5 @@
 import Settings
 from sources.Character import Character
-from sources.CommandHandler import CommandHandler
 
 
 class Game(object):
@@ -9,12 +8,12 @@ class Game(object):
     def __init__(self, command_handler):
         self.c_handler = command_handler
 
-    def create_hero(self, session_id, request_id):
+    async def create_hero(self, session_id, request_id):
         self.characters[session_id] = Character()
-        self.reply(request_id, "created character")
+        await self.reply(request_id, "created character")
 
-    def reply(self, request_id, content):
-        self.c_handler.reply(request_id, content)
+    async def reply(self, request_id, content):
+        await self.c_handler.reply(request_id, content)
 
 
 commands = {
