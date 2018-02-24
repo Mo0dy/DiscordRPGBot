@@ -4,8 +4,3 @@
 loop_freq = 20
 
 command_prefix = "."
-
-valid_commands = {
-    'test',
-    'test2',
-}

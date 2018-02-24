@@ -10,7 +10,8 @@ m_handler = MessageHandler(client)
 c_handler = CommandHandler(client, m_handler)
 
 
-def launch_bot():
+def launch_bot(game):
+    c_handler.game = game
     client.run("NDE2MjE5MTY4OTA4NjQwMjU2.DXBSFg.Dt_vYEiiA6F0YBHX7HQ4TvuDcU0")
 
 
@@ -31,6 +32,3 @@ async def on_message(message):
 @client.event
 async def on_reaction_add(reaction, user):
     await c_handler.handle_reaction(reaction, user)
-
-
-launch_bot()
