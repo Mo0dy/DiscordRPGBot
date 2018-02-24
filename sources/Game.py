@@ -13,8 +13,8 @@ class Game(object):
         self.characters[session_id] = Character()
         self.reply(request_id, "created character")
 
-    def reply(self, session_id, content):
-        self.c_handler.reply(session_id, content)
+    def reply(self, request_id, content):
+        self.c_handler.reply(request_id, content)
 
 
 commands = {
