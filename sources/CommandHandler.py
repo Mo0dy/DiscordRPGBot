@@ -4,6 +4,14 @@ import sources.Game as Game
 import Settings
 
 
+class OnReaction(object):
+    def __init__(self, message, emoji, action, author):
+        self.author = author
+        self.message = message
+        self.emoji = emoji
+        self.action = action
+
+
 class CommandHandler(object):
     def __init__(self, client, message_handler):
         self.client = client
@@ -11,6 +19,8 @@ class CommandHandler(object):
         self.requests = {}
         self.curr_request_id = 0
         self.game = None
+
+        self.waiting_stack = []
 
     async def handle_command(self, message):
         await self.m_handler.reply(message, "handling command")
@@ -30,8 +40,29 @@ class CommandHandler(object):
         self.curr_request_id += 1
         return self.curr_request_id - 1
 
+    async def ask_question(self, request_id, question, legend, option_labels, options):
+        '''asks a questions and notes that it's waiting for a reply'''
+        # prints question
+        ask_str = question
+        for i in range(len(option_labels)):
+            ask_str += "\n" + option_labels[i] + " " + legend[i]
+        send_message = await self.reply(request_id, ask_str)
+
+        # add reactions
+        for i in range(len(option_labels)):
+            await self.client.add_reaction(send_message, option_labels[i])
+            self.waiting_stack.append(OnReaction(send_message, option_labels[i], options[i], None))
+
     async def handle_reaction(self, reaction, user):
-        pass
+        print("reaction")
+        print(self.waiting_stack)
+        for w in self.waiting_stack:
+            if w.emoji == reaction.emoji:
+                print("found reaction")
+                w.action()
 
     async def reply(self, request_id, content):
-        await self.m_handler.reply(self.requests[request_id], content)
+        if type(content) != str:
+            content = str(content)
+        return await self.m_handler.reply(self.requests[request_id], content)
+
