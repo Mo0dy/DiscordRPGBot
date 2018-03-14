@@ -1,45 +1,6 @@
 import sources.DiscordIO as DiscordIO
 from sources.Game import Game
-import time
 
+game = Game(DiscordIO.c_handler)
 
-# some not game related settings
-debug = True
-
-
-# stores the messages written between iterations
-events = []
-messages = []
-DiscordIO.pass_event_list(events)
-DiscordIO.pass_messages(messages)
-
-# create new game
-game = Game()
-
-last_time = time.time()
-def main_loop():
-    global events, last_time, messages
-    # calculate dt
-    curr_time = time.time()
-    dt = curr_time - last_time
-    last_time = curr_time
-
-    if debug:
-        printed = False
-        for e in events:
-            print(e)
-            printed = True
-        if printed:
-            print("")
-
-    # update game
-    messages += game.update(events, dt)
-
-    # be careful not to change the reference
-    del events[:]
-
-
-DiscordIO.pass_main_loop(main_loop)
-
-
-DiscordIO.launch_bot()
+DiscordIO.launch_bot(game)

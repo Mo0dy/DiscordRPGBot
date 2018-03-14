@@ -1,55 +1,64 @@
 import Settings
-from sources.Character import Character
+from sources.Session import Session
+import discord
 
 
 class Game(object):
-    characters = {}
-    messages = []
+    sessions = {}
 
-    def __init__(self):
-        pass
+    def __init__(self, command_handler):
+        self.c_handler = command_handler
 
-    def update(self, events, dt):
-        self.messages = []
+    async def create_hero(self, session_id, request_id):
+        self.get_session(session_id).new_hero()
+        await self.reply(request_id, "created character")
 
-        for e in events:
-            command = e.content.split(" ")
-            if command[0] in self.commands:
-                self.commands[command[0]](self, e)
+    async def get_hp(self, session_id, request_id):
+        await self.reply(request_id, self.get_session(session_id).get_hp())
 
-        return self.messages
+    # challenges another player to a duel
+    async def challenge(self, session_id, request_id):
+        mentions = self.c_handler.requests[request_id].mentions
+        # you can only challenge one person
+        if len(mentions) == 1:
+            pass
+        else:
+            await self.reply(request_id, "not enough mentions")
 
-    def test(self, event):
-        self.reply(event, "test")
+    # creates and displays the main menu
+    async def menu(self, session_id, request_id):
+        await self.ask_quest(request_id, "what menu point do you want?", ["hp", "create hero"], ["\N{grinning face}", "\N{face with tears of joy}"], [Game.get_hp, Game.create_hero])
 
-    def create_character(self, event):
-        self.characters[event.owner] = Character()
-        self.reply(event, "created char")
+    # asks a question with multiple options
+    async def ask_quest(self, request_id, content, legend, option_lables, options):
+        await self.c_handler.ask_question(request_id, content, legend, option_lables, options)
 
-    def get_hp(self, event):
-        self.reply(event, str(self.characters[event.owner].hp))
+    # sends a message mentioning the author of the request
+    async def reply(self, request_id, content):
+        await self.c_handler.reply(request_id, content)
 
-    def help(self, event):
-        self.reply(event, str(self.commands))
+    # creates a session (the session stores current game state and the character)
+    async def create_session(self, session_id, request_id):
+        self.sessions[session_id] = Session()
+        await self.reply(request_id, "created session")
 
-    def reply(self, event, content):
-        self.send_message(event.raw_content.channel, content)
-
-    def send_message(self, target, content):
-        self.messages.append(Message(target, content))
-
-    commands = {
-        'test': test,
-        'create_char': create_character,
-        'help': help,
-        'hp': get_hp,
-    }
+    def get_session(self, session_id):
+        return self.sessions[session_id]
 
 
-class Message(object):
-    def __init__(self, target, content):
-        self.target = target
-        self.content = content
+    # just some fun xD
+    async def cheer(self, session_id, request_id):
+        await self.reply(request_id, "cheering!")
+        await self.ask_quest(request_id, "do you want to cheer again?", ["cheer"],
+                             ["\N{grinning face}"], [Game.cheer])
 
-    def __repr__(self):
-        return '<target: "' + self.target.name + '" content: "' + self.content + '">'
+
+# this maps commands called in discord (i.e. ".new") to actual functions
+commands = {
+    "new": Game.create_hero,
+    "hp": Game.get_hp,
+    "login": Game.create_session,
+    "menu": Game.menu,
+    "cheer": Game.cheer,
+    "challenge": Game.challenge,
+}
