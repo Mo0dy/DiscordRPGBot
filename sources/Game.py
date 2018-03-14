@@ -16,6 +16,15 @@ class Game(object):
     async def get_hp(self, session_id, request_id):
         await self.reply(request_id, self.get_session(session_id).get_hp())
 
+    # challenges another player to a duel
+    async def challenge(self, session_id, request_id):
+        mentions = self.c_handler.requests[request_id].mentions
+        # you can only challenge one person
+        if len(mentions) == 1:
+            pass
+        else:
+            await self.reply(request_id, "not enough mentions")
+
     # creates and displays the main menu
     async def menu(self, session_id, request_id):
         await self.ask_quest(request_id, "what menu point do you want?", ["hp", "create hero"], ["\N{grinning face}", "\N{face with tears of joy}"], [Game.get_hp, Game.create_hero])
@@ -51,4 +60,5 @@ commands = {
     "login": Game.create_session,
     "menu": Game.menu,
     "cheer": Game.cheer,
+    "challenge": Game.challenge,
 }
