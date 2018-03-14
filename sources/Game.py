@@ -37,9 +37,18 @@ class Game(object):
         return self.sessions[session_id]
 
 
+    # just some fun xD
+    async def cheer(self, session_id, request_id):
+        await self.reply(request_id, "cheering!")
+        await self.ask_quest(request_id, "do you want to cheer again?", ["cheer"],
+                             ["\N{grinning face}"], [Game.cheer])
+
+
+# this maps commands called in discord (i.e. ".new") to actual functions
 commands = {
     "new": Game.create_hero,
     "hp": Game.get_hp,
     "login": Game.create_session,
     "menu": Game.menu,
+    "cheer": Game.cheer,
 }
