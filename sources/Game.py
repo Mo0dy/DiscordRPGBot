@@ -16,15 +16,19 @@ class Game(object):
     async def get_hp(self, session_id, request_id):
         await self.reply(request_id, self.get_session(session_id).get_hp())
 
+    # creates and displays the main menu
     async def menu(self, session_id, request_id):
-        await self.ask_quest(request_id, "what menu point do you want?", ["hp", "create hero"], ["\N{grinning face}", "\N{face with tears of joy}"], [self.get_hp, self.create_hero])
+        await self.ask_quest(request_id, "what menu point do you want?", ["hp", "create hero"], ["\N{grinning face}", "\N{face with tears of joy}"], [Game.get_hp, Game.create_hero])
 
+    # asks a question with multiple options
     async def ask_quest(self, request_id, content, legend, option_lables, options):
         await self.c_handler.ask_question(request_id, content, legend, option_lables, options)
 
+    # sends a message mentioning the author of the request
     async def reply(self, request_id, content):
         await self.c_handler.reply(request_id, content)
 
+    # creates a session (the session stores current game state and the character)
     async def create_session(self, session_id, request_id):
         self.sessions[session_id] = Session()
         await self.reply(request_id, "created session")

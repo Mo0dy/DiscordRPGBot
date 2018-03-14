@@ -5,11 +5,12 @@ import Settings
 
 
 class OnReaction(object):
-    def __init__(self, message, emoji, action, author):
-        self.author = author
-        self.message = message
+    def __init__(self, message, emoji, action, request_id):
+        self.message_id = message.id
         self.emoji = emoji
         self.action = action
+        # the user that has to react
+        self.request_id = request_id
 
 
 class CommandHandler(object):
@@ -48,18 +49,20 @@ class CommandHandler(object):
             ask_str += "\n" + option_labels[i] + " " + legend[i]
         send_message = await self.reply(request_id, ask_str)
 
-        # add reactions
+        # add reactions (options)
         for i in range(len(option_labels)):
             await self.client.add_reaction(send_message, option_labels[i])
-            self.waiting_stack.append(OnReaction(send_message, option_labels[i], options[i], None))
+            # appends reactions to waiting stack also stores user that called the original command stored under the request_id
+            self.waiting_stack.append(OnReaction(send_message, option_labels[i], options[i], request_id))
 
     async def handle_reaction(self, reaction, user):
         print("reaction")
         print(self.waiting_stack)
         for w in self.waiting_stack:
-            if w.emoji == reaction.emoji:
+            # the message id matches the one that the program is waiting for and the user is the correct
+            if w.emoji == reaction.emoji and w.message_id == reaction.message.id and self.requests[w.request_id].author == user:
                 print("found reaction")
-                w.action()
+                await w.action(self.game, user, w.request_id)
 
     async def reply(self, request_id, content):
         if type(content) != str:
