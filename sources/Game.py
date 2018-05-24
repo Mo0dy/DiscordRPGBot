@@ -18,20 +18,34 @@ class Game(object):
 
     # challenges another player to a duel
     async def challenge(self, session_id, request_id):
-        mentions = self.c_handler.requests[request_id].mentions
+        mentions = self.c_handler.get_content(request_id).mentions
         # you can only challenge one person
         if len(mentions) == 1:
-            pass
+            opponent = mentions[0]
+            # opponent is logged in
+            if opponent in self.sessions:
+                await self.ask_quest(opponent, self.c_handler.get_channel(request_id), "do you accept the challange?", ["yes", "no"], ["\N{grinning face}", "\N{face with tears of joy}"], [Game.fight, Game.pass_challange])
+            else:
+                await self.reply(request_id, (opponent.mention + "is not logged in"))
         else:
             await self.reply(request_id, "not enough mentions")
 
+    async def fight(self, session_id, request_id):
+        # the challanged person begins
+        request = self.c_handler.get_request(request_id)
+        pass
+
+    async def pass_challange(self, session_id, request_id):
+        await self.reply(request_id, "passed the challange")
+
     # creates and displays the main menu
     async def menu(self, session_id, request_id):
-        await self.ask_quest(request_id, "what menu point do you want?", ["hp", "create hero"], ["\N{grinning face}", "\N{face with tears of joy}"], [Game.get_hp, Game.create_hero])
+        request = self.c_handler.get_request(request_id)
+        await self.ask_quest(request.owner, request.content.channel, "what menu point do you want?", ["hp", "create hero"], ["\N{grinning face}", "\N{face with tears of joy}"], [Game.get_hp, Game.create_hero])
 
     # asks a question with multiple options
-    async def ask_quest(self, request_id, content, legend, option_lables, options):
-        await self.c_handler.ask_question(request_id, content, legend, option_lables, options)
+    async def ask_quest(self, target, channel, content, legend, option_lables, options):
+        await self.c_handler.ask_question(target, channel, content, legend, option_lables, options)
 
     # sends a message mentioning the author of the request
     async def reply(self, request_id, content):

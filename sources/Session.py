@@ -17,3 +17,9 @@ class Session(object):
     def get_hp(self):
         return self.hero.hp
 
+    def get_attacked(self, damage):
+        damage -= self.hero.stats["armor"]
+        # armor subtracts from damage. Damage can never be less then one
+        if damage < 1:
+            damage = 1
+        self.hero.hp -= damage

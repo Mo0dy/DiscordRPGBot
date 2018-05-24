@@ -6,8 +6,10 @@ class MessageHandler(object):
     def __init__(self, client):
         self.client = client
 
-    async def send_message(self, target, content):
-        return await self.client.send_message(target, content)
+    async def send_message(self, channel, content):
+        return await self.client.send_message(channel, content)
 
-    async def reply(self, orig, content):
-        return await self.send_message(orig.channel, ",\n===== " + orig.author.mention + " =====\n" + content + "\n=================")
+    async def send_targeted_message(self, target, channel, content):
+        return await self.send_message(channel,
+                                       ",\n===== " + target.mention + " =====\n" + content + "\n=================")
+
